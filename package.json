@@ -5,8 +5,10 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "4.17.1",
+    "loglevel": "^1.8.0",
     "sequelize": "^6.3.4",
-    "sqlite3": "^4.0.1"
+    "sqlite3": "^4.0.1",
+    "winston": "^3.3.3"
   },
   "scripts": {
     "start": "nodemon ./src/server.js",
@@ -14,6 +16,7 @@
   },
   "devDependencies": {
     "concurrently": "4.1.0",
+    "jest": "^27.4.5",
     "nodemon": "1.19.1"
   },
   "engines": {

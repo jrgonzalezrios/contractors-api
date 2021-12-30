@@ -3,6 +3,7 @@ module.exports = app => {
     const {getProfile} = require('../middleware/getProfile')
     const contracts = require('../controllers/contracts.controller')
     const jobs = require('../controllers/jobs.controller')
+    const balances = require('../controllers/balances.controller')
 
     const router = require('express').Router()
 
@@ -12,4 +13,5 @@ module.exports = app => {
     app.get('/jobs/unpaid', getProfile, jobs.getUnpaid)
     app.post('/jobs/:job_id/pay', getProfile, jobs.payById)
 
+    app.post('/balances/deposit/:userId', balances.deposit)
 }

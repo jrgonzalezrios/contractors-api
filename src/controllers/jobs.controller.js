@@ -30,8 +30,6 @@ exports.getUnpaid = async (req, res) => {
 }
 
 exports.payById = async (req, res) => {
-    
-
     const { Job, Contract, Profile } = req.app.get('models')
     const { id, type, balance } = req.profile
     const {job_id} = req.params

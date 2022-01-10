@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-
+const balanceService = require('../services/balance.service')
 exports.deposit = async (req, res) => {
     const { Profile, Contract, Job } = req.app.get('models')
     const { userId } = req.params
@@ -32,17 +32,29 @@ exports.deposit = async (req, res) => {
         resp.message = 'Invalid client'
         return res.status(400).json(resp)
     }
-    const totalPending = 0
-    const pendingValues =  client.Client.map(contracts =>{
-        //return contracts
-        const  pendingJob = contracts.Jobs.filter(job => {
-            return job.paid == null
-        })
-        if(pendingJob.length > 0){
-          return pendingJob[0]
-        }
-        
+    const contracts = client.Client
+    const total = contracts.map(contract => {
+    const pendigJob = contract.Jobs.filter(job => {
+        return job.paid == null
     })
+        return  pendigJob.reduce((accum,item) => accum + item.price, 0)
+    }).reduce((previousValue, currentValue) => previousValue + currentValue)
 
-    res.json(pendingValues)
+    // Check 25% of total unpaid jobs is less than money
+    const totalPercent = total * 0.25
+    
+    if(money >= totalPercent) {
+        resp.message = 'Invalid amount, is greater than 25% of unpaid jobs'
+        return res.status(400).json(resp)
+    }
+    // Update client balance
+    client.balance += money
+    const clientUpdated = await balanceService.updateProfile(client)
+
+    if(!clientUpdated){
+        resp.message = 'Internal Error, Balance was not updated'
+        return res.status(400).json(resp)
+    }
+    resp.message = `Client's Balance was succesfuly updated, Client Balance: ${client.balance}` 
+    return res.json(resp)
 }
